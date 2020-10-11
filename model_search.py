@@ -31,6 +31,7 @@ class MixedOp(nn.Module):
     self.k = 4
     for primitive in PRIMITIVES:
       op = OPS[primitive](C //self.k, stride, False)
+      # jin 很奇怪，为什么加这么一个操作
       if 'pool' in primitive:
         op = nn.Sequential(op, nn.BatchNorm2d(C //self.k, affine=False))
       self._ops.append(op)
@@ -156,6 +157,8 @@ class Network(nn.Module):
           start = end
           n += 1
           weights2 = torch.cat([weights2,tw2],dim=0)
+      import pdb
+      pdb.set_trace()
       s0, s1 = s1, cell(s0, s1, weights,weights2)
     out = self.global_pooling(s1)
     logits = self.classifier(out.view(out.size(0),-1))

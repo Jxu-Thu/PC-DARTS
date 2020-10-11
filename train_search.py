@@ -75,8 +75,6 @@ def main():
 
   criterion = nn.CrossEntropyLoss()
   criterion = criterion.cuda()
-  import pdb
-  pdb.set_trace()
   model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
   model = model.cuda()
   logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
@@ -110,8 +108,6 @@ def main():
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, float(args.epochs), eta_min=args.learning_rate_min)
   
-  import pdb
-  pdb.set_trace()
   architect = Architect(model, args)
 
   for epoch in range(args.epochs):
