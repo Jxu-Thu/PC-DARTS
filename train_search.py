@@ -21,6 +21,7 @@ from architect import Architect
 parser = argparse.ArgumentParser("cifar")
 parser.add_argument('--data', type=str, default='/blob/v-jinx/data', help='location of the data corpus')
 parser.add_argument('--set', type=str, default='cifar10_pc_darts', help='location of the data corpus')
+parser.add_argument('--warm_start_epoch', type=int, default=15, help='batch size')
 parser.add_argument('--batch_size', type=int, default=256, help='batch size')
 parser.add_argument('--learning_rate', type=float, default=0.1, help='init learning rate')
 parser.add_argument('--learning_rate_min', type=float, default=0.001, help='min learning rate')
@@ -74,6 +75,8 @@ def main():
 
   criterion = nn.CrossEntropyLoss()
   criterion = criterion.cuda()
+  import pdb
+  pdb.set_trace()
   model = Network(args.init_channels, CIFAR_CLASSES, args.layers, criterion)
   model = model.cuda()
   logging.info("param size = %fMB", utils.count_parameters_in_MB(model))
@@ -106,7 +109,9 @@ def main():
 
   scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
         optimizer, float(args.epochs), eta_min=args.learning_rate_min)
-
+  
+  import pdb
+  pdb.set_trace()
   architect = Architect(model, args)
 
   for epoch in range(args.epochs):
@@ -154,10 +159,12 @@ def train(train_queue, valid_queue, model, architect, criterion, optimizer, lr,e
     input_search = input_search.cuda()
     target_search = target_search.cuda(non_blocking=True)
 
-    if epoch>=15:
+    if epoch>=args.warm_start_epoch:
       architect.step(input, target, input_search, target_search, lr, optimizer, unrolled=args.unrolled)
 
     optimizer.zero_grad()
+    import pdb
+    pdb.set_trace()
     logits = model(input)
     loss = criterion(logits, target)
 
