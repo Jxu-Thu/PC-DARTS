@@ -38,6 +38,8 @@ class MixedOp(nn.Module):
 
 
   def forward(self, x, weights):
+    import pdb
+    pdb.set_trace()
     #channel proportion k=4  
     dim_2 = x.shape[1]
     xtemp = x[ : , :  dim_2//self.k, :, :]
@@ -76,7 +78,7 @@ class Cell(nn.Module):
         op = MixedOp(C, stride)
         self._ops.append(op)
 
-  def forward(self, s0, s1, weights,weights2):
+  def forward(self, s0, s1, weights, weights2):
     s0 = self.preprocess0(s0)
     s1 = self.preprocess1(s1)
 
